@@ -1,6 +1,6 @@
-package com.karthik.repository;
+package com.myproj.ai_interview_question_generator.repository;
 
-import com.karthik.entity.AnswerFeedback;
+import com.myproj.ai_interview_question_generator.entity.AnswerFeedback;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AnswerFeedbackRepository extends JpaRepository<AnswerFeedback, Long> {

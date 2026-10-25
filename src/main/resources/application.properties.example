@@ -1,8 +1,15 @@
+spring.application.name=ai-interview-question-generator
+
 spring.datasource.url=jdbc:mysql://localhost:3306/interview_generator
 spring.datasource.username=your_mysql_username
 spring.datasource.password=your_mysql_password
 spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
 
 gemini.api.key=YOUR_GEMINI_API_KEY_HERE
 gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models
 gemini.model=gemini-flash-latest
+
+# Generate your own with: python3 -c "import secrets,base64; print(base64.b64encode(secrets.token_bytes(32)).decode())"
+jwt.secret=REPLACE_WITH_YOUR_OWN_BASE64_SECRET
+jwt.expiration.ms=86400000

@@ -1,6 +1,6 @@
-package com.karthik.repository;
+package com.myproj.ai_interview_question_generator.repository;
 
-import com.karthik.entity.QuestionSet;
+import com.myproj.ai_interview_question_generator.entity.QuestionSet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuestionSetRepository extends JpaRepository<QuestionSet, Long> {
