@@ -44,9 +44,6 @@ public class    GeminiClientService {
      */
     public String callGemini(String prompt) {
         String path = "/" + model + ":generateContent?key=" + apiKey;
-        System.out.println("GEMINI REQUEST PATH: " + path);
-        System.out.println("GEMINI MODEL: " + model);
-        System.out.println("GEMINI KEY LENGTH: " + (apiKey != null ? apiKey.length() : "NULL"));
 
         Map<String, Object> requestBody = Map.of(
                 "contents", List.of(
@@ -63,7 +60,7 @@ public class    GeminiClientService {
                     .bodyValue(requestBody)
                     .retrieve()
                     .bodyToMono(GeminiResponse.class)
-                    .timeout(Duration.ofSeconds(45))
+                    .timeout(Duration.ofSeconds(60))
                     .retryWhen(
                             Retry.backoff(1, Duration.ofSeconds(3))
                                     .filter(this::isRetryable)

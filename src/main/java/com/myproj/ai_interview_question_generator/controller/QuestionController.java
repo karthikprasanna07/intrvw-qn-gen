@@ -8,6 +8,9 @@ import com.myproj.ai_interview_question_generator.service.AnswerEvaluationServic
 import com.myproj.ai_interview_question_generator.service.QuestionGenerationService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
@@ -30,5 +33,9 @@ public class QuestionController {
     public EvaluateAnswerResponse evaluate(@PathVariable Long questionId,
                                             @RequestBody EvaluateAnswerRequest request) {
         return answerEvaluationService.evaluateAnswer(questionId, request);
+    }
+    @GetMapping("/history")
+    public List<QuestionSetResponse> getInterviewHistory() {
+        return questionGenerationService.getInterviewHistory();
     }
 }

@@ -16,5 +16,5 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String password; // stored as BCrypt hash, never plain text
+    private String password; // Stored as BCrypt hash, never plain text
 }

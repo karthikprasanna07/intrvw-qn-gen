@@ -10,6 +10,9 @@ import com.myproj.ai_interview_question_generator.exception.GeminiServiceExcepti
 import com.myproj.ai_interview_question_generator.repository.QuestionSetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import com.myproj.ai_interview_question_generator.entity.User;
+import com.myproj.ai_interview_question_generator.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -20,13 +23,18 @@ public class QuestionGenerationService {
     private final GeminiClientService geminiClientService;
     private final QuestionSetRepository questionSetRepository;
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
-    public QuestionGenerationService(GeminiClientService geminiClientService,
-                                      QuestionSetRepository questionSetRepository,
-                                      ObjectMapper objectMapper) {
+    public QuestionGenerationService(
+            GeminiClientService geminiClientService,
+            QuestionSetRepository questionSetRepository,
+            ObjectMapper objectMapper,
+            UserRepository userRepository) {
+
         this.geminiClientService = geminiClientService;
         this.questionSetRepository = questionSetRepository;
         this.objectMapper = objectMapper;
+        this.userRepository = userRepository;
     }
 
     public QuestionSetResponse generateQuestions(GenerateQuestionsRequest request) {
@@ -46,7 +54,17 @@ public class QuestionGenerationService {
             throw new GeminiServiceException("Gemini returned malformed JSON for question generation", e);
         }
 
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         QuestionSet questionSet = new QuestionSet();
+        questionSet.setUser(user);
+
+
         questionSet.setRole(request.getRole());
         questionSet.setExperienceLevel(request.getExperienceLevel());
         questionSet.setDifficulty(request.getDifficulty());
@@ -115,5 +133,21 @@ public class QuestionGenerationService {
 
         response.setQuestions(questionDtos);
         return response;
+    }
+    public List<QuestionSetResponse> getInterviewHistory() {
+
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<QuestionSet> questionSets =
+                questionSetRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+
+        return questionSets.stream()
+                .map(this::toResponse)
+                .toList();
     }
 }
